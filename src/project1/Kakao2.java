@@ -33,7 +33,7 @@ import javax.swing.event.ListSelectionListener;
 import lombok.Data;
 
 @Data
-public class Kakao extends JFrame implements ActionListener,ListSelectionListener{
+public class Kakao2 extends JFrame implements ActionListener,ListSelectionListener{
 
 	private Vector<Socket>socket;
 	private ArrayList<Integer> portNum;
@@ -64,7 +64,7 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 	private PrintWriter sendMsg;
 	private String[] roomName;
 	
-	public Kakao () {
+	public Kakao2 () {
 		initData();
 		initLayoutData();
 		actionListener();
@@ -230,7 +230,7 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 	
 	
 	public static void main(String[] args) {
-		new Kakao();
+		new Kakao2();
 	}
 	
 	
