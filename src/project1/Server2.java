@@ -13,10 +13,9 @@ import lombok.Data;
 import lombok.Locked.Write;
 
 @Data
-public class Server implements Runnable{
+public class Server2 {
 	
 	private static Vector<Socket>socket;
-	private static Vector<Socket>chatSocket;
 	private static ArrayList<String>roomName;
 	private static ArrayList<String>userId;
 	private static ArrayList<String>createUser;
@@ -30,9 +29,8 @@ public class Server implements Runnable{
 	private ServerFrame serverFrame;
 	private static int port = 5001;
 	
-	public Server() {
+	public Server2() {
 		
-		new ServerFrame(this); // 서버 프레임 화면
 		socket = new Vector<>(30); // 인원 30명으로 설정
 		createUser = new ArrayList<>(5);
 		roomName = new ArrayList<>(20);
@@ -52,34 +50,40 @@ public class Server implements Runnable{
 		}
 	}
 	
-	public Server(int port,String servername) {
-		this.serverName = servername;
-		this.port = port;
-		port++;
-	}
 	
-	@Override
-	public void run() {
-		chatSocket = new Vector<>(30);
-		System.out.println(serverName + "서버 작동");
-		System.out.println(port + " : 서버 포트번호");
-		try (ServerSocket serversocket = new ServerSocket(port)){
-			port++;
-			// 새로운 인원이 들어올때마다 소켓 추가
-				while(true) {
-					try {
-						chatSocket.add(serversocket.accept());
-						System.out.println(number + "첫번째 손님 입장");
-						new Client(chatSocket.get(number), number).start();
-						number++;
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				
-		} catch (IOException e) {
-			e.printStackTrace();
+	private static class MakeServer implements Runnable {
+		public static Vector<Socket>chatSocket;
+		private static ArrayList<Integer> user;
+		private static int port;
+		private static int serialNum;
+		
+		public MakeServer(int port) {
+			this.port = port;
 		}
+		
+		@Override
+		public void run() {
+			chatSocket = new Vector<>(30);
+			try(ServerSocket chatServer = new ServerSocket(port)) {
+				System.out.println("서버 생성 완료");
+				System.out.println(port);
+				while(true) {
+					System.out.println(port + "서버 기다리는중");
+					chatSocket.add(chatServer.accept());
+					System.out.println("손님 입장");
+					System.out.println(chatSocket.size());
+					System.out.println(serialNum);
+					new Client(chatSocket.get(serialNum), serialNum).start();
+					serialNum++;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		public static Vector<Socket> getChatSocket() {
+			return chatSocket;
+		}
+		
 	}
 	
 	// 전체에게 명령이 들어가는 메소드 (생성 명령)
@@ -108,7 +112,7 @@ public class Server implements Runnable{
 	}
 	// 전체에게 메세지가 들어가는 메소드 
 	private static void broadCastChat(String message) {
-		for(Socket socket : chatSocket) {
+		for(Socket socket : MakeServer.getChatSocket()) {
 			try {
 				writer = new PrintWriter(socket.getOutputStream(), true);
 				writer.println(message);
@@ -184,12 +188,12 @@ public class Server implements Runnable{
 						broadCast(serverName[1],port); // 대기실 서버 사용자들에게 해당 이름의 방을 만들라고 명령 , 포트 주소도 보냄
 						roomName.add(serverName[1]); // 서버에 방 추가
 						createUser.add(serverName[2]); // 만든유저 정보 저장
-						new Thread(new Server(port, serverName[1])).start(); 
+						new Thread(new MakeServer(port)).start();
+						port++;
 					}
 					if(orderMsg.startsWith("userName")) { // 유저 정보를 받아오는 명령어
 						String[] userName = orderMsg.split(":");
 						userId.add(userName[1]);
-						System.out.println(userId.get(0));
 					}
 					if(orderMsg.startsWith("deleteroom")) { // 방 삭제 하라는 명령어
 						String[] orderData = orderMsg.split(":");
@@ -216,7 +220,7 @@ public class Server implements Runnable{
 	
 	
 	public static void main(String[] args) {
-		new Server();
+		new Server2();
 	}
 	
 	
