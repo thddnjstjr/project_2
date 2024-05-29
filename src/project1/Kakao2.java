@@ -36,7 +36,7 @@ import javax.swing.event.ListSelectionListener;
 import lombok.Data;
 
 @Data
-public class Kakao extends JFrame implements ActionListener,ListSelectionListener{
+public class Kakao2 extends JFrame implements ActionListener,ListSelectionListener{
 
 	private Vector<Socket>serviceSocket;
 	private Vector<Socket>socket;
@@ -72,7 +72,7 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 	private BufferedReader broadCast; // 대기실 서버 (WAITROOM) 명령어를 계속 받기위해 만듬
 	private PrintWriter orderMsg; // 마찬가지로 (WAITROOM)에 계속 명령어를 내리기 위해 만듬
 	
-	public Kakao () {
+	public Kakao2 () {
 		initData();
 		initLayoutData();
 		actionListener();
@@ -286,7 +286,7 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 	}
 	
 	public static void main(String[] args) {
-		new Kakao();
+		new Kakao2();
 	}
 	
 	@Override
