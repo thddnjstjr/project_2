@@ -26,6 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
@@ -49,7 +50,7 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 	private TextField chat;
 	private TextField search;
 	private TextField nickname;
-	private TextArea chatarea;
+	private JTextArea chatarea;
 	private JButton send;
 	private JButton join;
 	private JButton makeRoom;
@@ -160,7 +161,7 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 		chat = new TextField();
 		search = new TextField();
 		nickname = new TextField();
-		chatarea = new TextArea();
+		chatarea = new JTextArea();
 		roomCreat = new JButton();
 		delete = new JButton("방 삭제");
 		back = new JButton();
@@ -170,6 +171,9 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 		setContentPane(background1);
 		setSize(500,840);
 		login = true;
+		Font chatFont = new Font("망고보드 또박체 B",Font.BOLD,20);
+		chatarea.setFont(chatFont);
+		chatarea.setOpaque(false);
 	}
 	
 	public void actionListener() {
@@ -330,7 +334,7 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 		}
 		if(wait) {
 			g.setFont(font1);
-			g.drawString(name+"", 10, 700);
+			g.drawString(name+"", 20, 700);
 		}
 	}
 
@@ -345,12 +349,11 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 				socket.add(chatRoomNum,new Socket("localhost", portNum.get(0)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
-				sendMsg.println(socket.get(chatRoomNum).getPort() +":"+ name +":"+ "님이 입장하셨습니다.");
+				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");
 				chatRead().start();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			
 		}
 		if(roomList.getSelectedIndex() == 1) {
 			chatRoom();
@@ -360,12 +363,11 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 				socket.add(chatRoomNum,new Socket("localhost", portNum.get(1)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
-				sendMsg.println(socket.get(chatRoomNum).getPort() +":"+ name +":"+  "님이 입장하셨습니다.");
+				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");
 				chatRead().start();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			
 		}
 		if(roomList.getSelectedIndex() == 2) {
 			chatRoom();
@@ -375,7 +377,7 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 				socket.add(chatRoomNum,new Socket("localhost", portNum.get(2)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
-				sendMsg.println(socket.get(chatRoomNum).getPort() +":"+ name +":" + "님이 입장하셨습니다.");
+				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");
 				chatRead().start();
 			} catch (IOException e1) {
 				e1.printStackTrace();
@@ -389,7 +391,7 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 				socket.add(chatRoomNum,new Socket("localhost", portNum.get(3)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
-				sendMsg.println(socket.get(chatRoomNum).getPort() +":"+ name +":" + "님이 입장하셨습니다.");
+				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");
 				chatRead().start();
 			} catch (IOException e1) {
 				e1.printStackTrace();
@@ -403,12 +405,11 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 				socket.add(chatRoomNum,new Socket("localhost", portNum.get(4)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
-				sendMsg.println(socket.get(chatRoomNum).getPort() +":"+ name +":" + "님이 입장하셨습니다.");
+				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");
 				chatRead().start();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			
 		}
 	}
 }

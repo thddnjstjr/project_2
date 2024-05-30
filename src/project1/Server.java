@@ -20,6 +20,7 @@ public class Server implements Runnable{
 	private static ArrayList<String>roomName;
 	private static ArrayList<String>userId;
 	private static ArrayList<String>createUser;
+	private static ArrayList<Integer>serialId;
 	private static Kakao kakao;
 	private static PrintWriter writer;
 	private static BufferedReader client;
@@ -37,6 +38,8 @@ public class Server implements Runnable{
 		createUser = new ArrayList<>(5);
 		roomName = new ArrayList<>(20);
 		userId = new ArrayList<>(30);
+		chatSocket = new Vector<>(100);
+		serialId = new ArrayList<>(100);
 		
 		try (ServerSocket serverSocket = new ServerSocket(5000)){
 			System.out.println("서버 구동완료");
@@ -60,25 +63,29 @@ public class Server implements Runnable{
 	
 	@Override
 	public void run() {
-		chatSocket = new Vector<>(30);
 		System.out.println(serverName + "서버 작동");
 		System.out.println(port + " : 서버 포트번호");
 		try (ServerSocket serversocket = new ServerSocket(port)){
 			port++;
+			int many = 0;
+			
 			// 새로운 인원이 들어올때마다 소켓 추가
 				while(true) {
 					try {
-						Socket blank = serversocket.accept();
+						Socket blank = serversocket.accept(); // 담아놓을 소켓 없으면 오류가 생김
 						chatSocket.add(blank);
+						many++;
 						System.out.println(number + "첫번째 손님 입장");
-						System.out.println(chatSocket.size());
-						new Client(chatSocket.get(number), number).start();
+						System.out.println(chatSocket.size() + " 소켓 사이즈");
+						System.out.println(serialId.size() + " 시리얼 넘버");
+						new Client(chatSocket.get(serialId.size())).start();
+						broadCast(many ,port-1);
+						serialId.add(number);
 						number++;
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
-				
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -108,6 +115,16 @@ public class Server implements Runnable{
 			}
 		}
 	}
+	// 전체에게 명령이 들어가는 메소드 (방 인원수 전달)
+	private static void broadCast(int many,int port) {
+		for(Socket socket : socket) {
+			try {
+					writer.println("howMany:" + port+":"+ many);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	// 전체에게 메세지가 들어가는 메소드 
 	private static void broadCastChat(int port,String message) {
 		for(Socket socket : chatSocket) {
@@ -127,11 +144,9 @@ public class Server implements Runnable{
 		
 		private Socket socket;
 		private BufferedReader msgin;
-		private int serialNumber;
 		
-		public Client(Socket socket, int number) {
+		public Client(Socket socket) {
 			this.socket = socket;
-			this.serialNumber = number;
 		}
 		
 		@Override
@@ -142,11 +157,22 @@ public class Server implements Runnable{
 				writer = new PrintWriter(socket.getOutputStream());
 				String message;
 				while( (message = msgin.readLine()) != null) {
-					if(message.startsWith("quit")){
+					if(message.startsWith("quit")){ // 나갔음을 알림 
 						String exit[] = message.split(":");
 						int portNum = Integer.valueOf(exit[1]);
 						broadCastChat(portNum,exit[2]);
+					}
+					else if(message.startsWith("enter")) { // 들어옴을 알림
+						String enter[] = message.split(":");
+						int portNum = Integer.valueOf(enter[1]);
+						broadCastChat(portNum,enter[2]);
+					} else if(message.startsWith("img")) { // 이모티콘 보내기
+						String img[] = message.split(":");
+						int portNum = Integer.valueOf(img[1]);
+						broadCastChat(portNum, "img:"+img[2]);
+						System.out.println(img[2]);
 					} else {
+						System.out.println(message);
 						String broadCast[] = message.split(":");
 						int portNum = Integer.valueOf(broadCast[0]);
 						String chat = broadCast[1] + " : " + broadCast[2];
@@ -207,7 +233,7 @@ public class Server implements Runnable{
 								broadCast(i);
 								roomName.remove(i); // i 번째 방 삭제
 								createUser.remove(i); // i 번째 방 만든 유저 정보 삭제
-							} else {
+							} else if(!createUser.get(i).equals(orderData[2])){
 								service.println("error:wrongUser");
 							}
 						}
