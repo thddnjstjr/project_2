@@ -67,19 +67,17 @@ public class Server implements Runnable{
 		System.out.println(port + " : 서버 포트번호");
 		try (ServerSocket serversocket = new ServerSocket(port)){
 			port++;
-			int many = 0;
 			
 			// 새로운 인원이 들어올때마다 소켓 추가
 				while(true) {
 					try {
 						Socket blank = serversocket.accept(); // 담아놓을 소켓 없으면 오류가 생김
 						chatSocket.add(blank);
-						many++;
+						System.out.println(blank.getLocalPort() + " : 포트 번호");
 						System.out.println(number + "첫번째 손님 입장");
 						System.out.println(chatSocket.size() + " 소켓 사이즈");
 						System.out.println(serialId.size() + " 시리얼 넘버");
 						new Client(chatSocket.get(serialId.size())).start();
-						broadCast(many ,port-1);
 						serialId.add(number);
 						number++;
 					} catch (IOException e) {
@@ -111,16 +109,6 @@ public class Server implements Runnable{
 				writer = new PrintWriter(socket.getOutputStream(), true);
 				writer.println("deleteroom:"+indexNum);
 			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	// 전체에게 명령이 들어가는 메소드 (방 인원수 전달)
-	private static void broadCast(int many,int port) {
-		for(Socket socket : socket) {
-			try {
-					writer.println("howMany:" + port+":"+ many);
-			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

@@ -45,7 +45,6 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 	private ArrayList<Integer> portNum;
 	private ArrayList<Integer> imgNum;
 	private ArrayList<String> roomData;
-	private JScrollPane scroll;
 	private JLabel background1;
 	private JLabel background2;
 	private JLabel background3;
@@ -106,18 +105,6 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 					String serverMsg;
 					while( (serverMsg = broadCast.readLine()) != null) {
 						System.out.println("서버에서 보냄 : " + serverMsg);
-						if(serverMsg.startsWith("howMany")) {
-							String people[] = serverMsg.split(":");
-							int serverPort = Integer.valueOf(people[1]);
-							many = Integer.valueOf(people[2]);
-							for(int i = 0; i< portNum.size(); i++) {
-								if(serverPort == portNum.get(i)) {
-									model.remove(i);
-									model.add(i, roomData.get(i) + " 방 " + "     인원수 : " + many + "  / " + 30);
-									repaint();
-								}
-							}
-						}
 						if(serverMsg.startsWith("createroom")) {
 							String roomName[] = serverMsg.split(":");
 							model.addElement(roomName[1] + " 방 " + "     인원수 : " + 0 + "  / " + 30);
@@ -199,41 +186,39 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 			protected void paintComponent(Graphics g) {
 					if(imoticon) {
 						int imgCount = 0; // 이미지 저장해놓은거 불러오기
-						g.drawImage(new ImageIcon(image.get(imgCount)).getImage(),50,imgNum.get(imgCount) * 20 - 15,this);
-						System.out.println("첫번쨰 작동중 : " + imgNum.get(imgCount));
+						g.drawImage(new ImageIcon(image.get(imgCount)).getImage(),58,imgNum.get(imgCount) * 27 - 30,this);
 						if(imgNum.size() > 1) {
-							g.drawImage(new ImageIcon(image.get(imgCount+1)).getImage(),50,imgNum.get(imgCount+1) * 20 - 15,this);
-							System.out.println("두번째 작동중 : " + imgNum.get(imgCount+1));
+							g.drawImage(new ImageIcon(image.get(imgCount+1)).getImage(),58,imgNum.get(imgCount+1) * 27 - 34,this);
 						}
 						if(imgNum.size() > 2) {
-							g.drawImage(new ImageIcon(image.get(imgCount+2)).getImage(),50,imgNum.get(imgCount+2) * 20 - 15,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+2)).getImage(),58,imgNum.get(imgCount+2) * 27 - 38,this);
 						}
 						if(imgNum.size() > 3) {
-							g.drawImage(new ImageIcon(image.get(imgCount+3)).getImage(),50,imgNum.get(imgCount+3) * 20 - 15,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+3)).getImage(),58,imgNum.get(imgCount+3) * 27 - 42,this);
 						}
 						if(imgNum.size() > 4) {
-							g.drawImage(new ImageIcon(image.get(imgCount+4)).getImage(),50,imgNum.get(imgCount+4) * 20 - 15,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+4)).getImage(),58,imgNum.get(imgCount+4) * 27 - 46,this);
 						}
 						if(imgNum.size() > 5) {
-							g.drawImage(new ImageIcon(image.get(imgCount+5)).getImage(),50,imgNum.get(imgCount+5) * 20 - 15,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+5)).getImage(),58,imgNum.get(imgCount+5) * 27 - 50,this);
 						}
 						if(imgNum.size() > 6) {
-							g.drawImage(new ImageIcon(image.get(imgCount+6)).getImage(),50,imgNum.get(imgCount+6) * 20 - 15,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+6)).getImage(),58,imgNum.get(imgCount+6) * 27 - 54,this);
 						}
 						if(imgNum.size() > 7) {
-							g.drawImage(new ImageIcon(image.get(imgCount+7)).getImage(),50,imgNum.get(imgCount+7) * 20 - 15,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+7)).getImage(),58,imgNum.get(imgCount+7) * 27 - 58,this);
 						}
 						if(imgNum.size() > 8) {
-							g.drawImage(new ImageIcon(image.get(imgCount+8)).getImage(),50,imgNum.get(imgCount+8) * 20 - 15,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+8)).getImage(),58,imgNum.get(imgCount+8) * 27 - 62,this);
 						}
 						if(imgNum.size() > 9) {
-							g.drawImage(new ImageIcon(image.get(imgCount+9)).getImage(),50,imgNum.get(imgCount+9) * 20 - 15,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+9)).getImage(),58,imgNum.get(imgCount+9) * 20 - 66,this);
 						}
 						if(imgNum.size() > 10) {
-							g.drawImage(new ImageIcon(image.get(imgCount+10)).getImage(),50,imgNum.get(imgCount+10) * 20 - 15,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+10)).getImage(),58,imgNum.get(imgCount+10) * 20 - 70,this);
 						}
 						if(imgNum.size() > 11) {
-							g.drawImage(new ImageIcon(image.get(imgCount+11)).getImage(),50,imgNum.get(imgCount+11) * 20 - 15,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+11)).getImage(),58,imgNum.get(imgCount+11) * 20 - 74,this);
 						}
 					}
 					super.paintComponent(g);
@@ -336,7 +321,7 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 		back.setFocusPainted(false);
 		chat.setSize(400,40);
 		chat.setLocation(40, 750);
-		scroll = new JScrollPane(chatarea) { // 스크롤 pane 테두리가 없도록 오버라이딩
+		JScrollPane scroll = new JScrollPane(chatarea) { // 스크롤 pane 테두리가 없도록 오버라이딩
 			@Override
 			public void setBorder(Border border) {
 			}
@@ -345,9 +330,12 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 		scroll.setOpaque(false); // 스크롤 pane 배경 투명하게 만들기
 		chatarea.requestFocusInWindow();
 		scroll.requestFocusInWindow();
+		scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
+		scroll.setViewportView(chatarea);
 		add(scroll);
 		scroll.setLocation(40, 100);
 		scroll.setSize(400,620);
+		scroll.revalidate();
 		requestFocus();
 		repaint();
 	}
@@ -378,25 +366,22 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 				String msg;
 				while( (msg = readMsg.readLine()) != null) {
 					if(msg.startsWith("img")) {
-						System.out.println(msg);
+						System.out.println("이미지 그리기 명령 들어옴");
 						String img[] = msg.split(":");
 						image.add(img[1]);
 						imgNum.add(chatarea.getLineCount());
 						imoticon = true;
 						chatarea.paintComponents(getGraphics());
-						scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
 						chatarea.append("\n");
 						chatarea.append("\n");
 						chatarea.append("\n");
 						chatarea.append("\n");
-						chatarea.append("\n");
-						chatarea.append("\n");
-					}
-					else {
+					} else if (msg.startsWith("howMany")){
+						return;
+					} else {
 						System.out.println("채팅 스레드에서 보낸 메세지 : " + msg);
 						System.out.println(socket.get(chatRoomNum).getPort() + " : 연결된 포트 넘버");
 						chatarea.append("\n" + msg);
-						scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
 						repaint();
 					}
 					repaint();
