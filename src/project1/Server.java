@@ -42,11 +42,12 @@ public class Server implements Runnable{
 		serialId = new ArrayList<>(100);
 		
 		try (ServerSocket serverSocket = new ServerSocket(5000)){
-			System.out.println("서버 구동완료");
+			System.out.println("서비스 서버 가동 완료");
+			// 서비스 서버 시작 완료
 			while(true) {
 				Socket blank = serverSocket.accept();
-				socket.add(blank);
-				new Service(socket.get(socketNum)).start();
+				socket.add(blank); // 클라이언트 정보 저장
+				new Service(socket.get(socketNum)).start(); // 클라이언트와 소통할 스레드 생성
 				socketNum++;
 				System.out.println(socketNum);
 			}
@@ -66,11 +67,10 @@ public class Server implements Runnable{
 		System.out.println(serverName + "서버 작동");
 		System.out.println(port + " : 서버 포트번호");
 		try (ServerSocket serversocket = new ServerSocket(port)){
-			port++;
 			
-			// 새로운 인원이 들어올때마다 소켓 추가
 				while(true) {
 					try {
+						// 채팅 서버 접속
 						Socket blank = serversocket.accept(); // 담아놓을 소켓 없으면 오류가 생김
 						chatSocket.add(blank);
 						System.out.println(blank.getLocalPort() + " : 포트 번호");
@@ -198,14 +198,16 @@ public class Server implements Runnable{
 					service.println("createroom:" + roomName.get(i));
 					System.out.println(roomName.get(i));
 				}
+				// 클라이언트에게서 명령이 올때까지 대기
 				while( (orderMsg = order.readLine()) != null) {
 					System.out.println(orderMsg + "확인");
 					if(orderMsg.startsWith("createroom")) { // 방 생성 하라는 명령어
 						String[] serverName = orderMsg.split(":");
+						new Thread(new Server(port, serverName[1])).start(); // 서버 생성
 						broadCast(serverName[1],port); // 대기실 서버 사용자들에게 해당 이름의 방을 만들라고 명령 , 포트 주소도 보냄
-						roomName.add(serverName[1]); // 서버에 방 추가
+						roomName.add(serverName[1]); // 서버에 방 정보 저장
 						createUser.add(serverName[2]); // 만든유저 정보 저장
-						new Thread(new Server(port, serverName[1])).start(); 
+						port++; // 새 서버 생성을 위해 포트번호 변경
 					}
 					if(orderMsg.startsWith("userName")) { // 유저 정보를 받아오는 명령어
 						String[] userName = orderMsg.split(":");

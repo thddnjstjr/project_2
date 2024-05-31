@@ -95,11 +95,12 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 				socket.add(i,null); // 빈 소켓 찾기 위해서 처음에 백터 공간을 전부 null로 만들어줌
 			}
 			serviceSocket.add(WAITROOM,new Socket("localhost",5000));
-			System.out.println("서버 접속 완료");
+			System.out.println("서비스 서버 접속 완료");
 			
 			broadCast = new BufferedReader(new InputStreamReader(serviceSocket.get(WAITROOM).getInputStream()));
 			orderMsg = new PrintWriter(serviceSocket.get(WAITROOM).getOutputStream(), true);
 			
+			// 서버에서 명령 받음
 			Thread readThread = new Thread (() -> {
 				try {
 					String serverMsg;
@@ -184,41 +185,42 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 		chatarea = new JTextArea() {
 			@Override
 			protected void paintComponent(Graphics g) {
+				// 이모티콘 그리기
 					if(imoticon) {
 						int imgCount = 0; // 이미지 저장해놓은거 불러오기
-						g.drawImage(new ImageIcon(image.get(imgCount)).getImage(),58,imgNum.get(imgCount) * 27 - 30,this);
+						g.drawImage(new ImageIcon(image.get(imgCount)).getImage(),58,imgNum.get(imgCount) * 20 - 14,this);
 						if(imgNum.size() > 1) {
-							g.drawImage(new ImageIcon(image.get(imgCount+1)).getImage(),58,imgNum.get(imgCount+1) * 27 - 34,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+1)).getImage(),58,imgNum.get(imgCount+1) * 20 - 14,this);
 						}
 						if(imgNum.size() > 2) {
-							g.drawImage(new ImageIcon(image.get(imgCount+2)).getImage(),58,imgNum.get(imgCount+2) * 27 - 38,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+2)).getImage(),58,imgNum.get(imgCount+2) * 20 - 14,this);
 						}
 						if(imgNum.size() > 3) {
-							g.drawImage(new ImageIcon(image.get(imgCount+3)).getImage(),58,imgNum.get(imgCount+3) * 27 - 42,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+3)).getImage(),58,imgNum.get(imgCount+3) * 20 - 14,this);
 						}
 						if(imgNum.size() > 4) {
-							g.drawImage(new ImageIcon(image.get(imgCount+4)).getImage(),58,imgNum.get(imgCount+4) * 27 - 46,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+4)).getImage(),58,imgNum.get(imgCount+4) * 20 - 14,this);
 						}
 						if(imgNum.size() > 5) {
-							g.drawImage(new ImageIcon(image.get(imgCount+5)).getImage(),58,imgNum.get(imgCount+5) * 27 - 50,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+5)).getImage(),58,imgNum.get(imgCount+5) * 20 - 14,this);
 						}
 						if(imgNum.size() > 6) {
-							g.drawImage(new ImageIcon(image.get(imgCount+6)).getImage(),58,imgNum.get(imgCount+6) * 27 - 54,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+6)).getImage(),58,imgNum.get(imgCount+6) * 20 - 14,this);
 						}
 						if(imgNum.size() > 7) {
-							g.drawImage(new ImageIcon(image.get(imgCount+7)).getImage(),58,imgNum.get(imgCount+7) * 27 - 58,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+7)).getImage(),58,imgNum.get(imgCount+7) * 20 - 14,this);
 						}
 						if(imgNum.size() > 8) {
-							g.drawImage(new ImageIcon(image.get(imgCount+8)).getImage(),58,imgNum.get(imgCount+8) * 27 - 62,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+8)).getImage(),58,imgNum.get(imgCount+8) * 20 - 14,this);
 						}
 						if(imgNum.size() > 9) {
-							g.drawImage(new ImageIcon(image.get(imgCount+9)).getImage(),58,imgNum.get(imgCount+9) * 20 - 66,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+9)).getImage(),58,imgNum.get(imgCount+9) * 20 - 14,this);
 						}
 						if(imgNum.size() > 10) {
-							g.drawImage(new ImageIcon(image.get(imgCount+10)).getImage(),58,imgNum.get(imgCount+10) * 20 - 70,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+10)).getImage(),58,imgNum.get(imgCount+10) * 20 - 14,this);
 						}
 						if(imgNum.size() > 11) {
-							g.drawImage(new ImageIcon(image.get(imgCount+11)).getImage(),58,imgNum.get(imgCount+11) * 20 - 74,this);
+							g.drawImage(new ImageIcon(image.get(imgCount+11)).getImage(),58,imgNum.get(imgCount+11) * 20 - 14,this);
 						}
 					}
 					super.paintComponent(g);
@@ -257,6 +259,7 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 				waitRoom();
 			}
 		});
+		// 채팅 보내는 이벤트
 		chat.addActionListener(new ActionListener() {
 			
 			@Override
@@ -328,14 +331,10 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 		};
 		scroll.getViewport().setOpaque(false); // 스크롤 배경 투명하게만들기
 		scroll.setOpaque(false); // 스크롤 pane 배경 투명하게 만들기
-		chatarea.requestFocusInWindow();
-		scroll.requestFocusInWindow();
 		scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
-		scroll.setViewportView(chatarea);
 		add(scroll);
 		scroll.setLocation(40, 100);
 		scroll.setSize(400,620);
-		scroll.revalidate();
 		requestFocus();
 		repaint();
 	}
@@ -349,7 +348,6 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 		}
 		else {
 			orderMsg.println("createroom:" + name + ":" + this.name);
-			System.out.println("작동");
 			count++;
 		}
 	}
@@ -364,7 +362,7 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 		return new Thread(() -> {
 			try {
 				String msg;
-				while( (msg = readMsg.readLine()) != null) {
+				while( (msg = readMsg.readLine()) != null && chatting) {
 					if(msg.startsWith("img")) {
 						System.out.println("이미지 그리기 명령 들어옴");
 						String img[] = msg.split(":");
@@ -376,13 +374,14 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 						chatarea.append("\n");
 						chatarea.append("\n");
 						chatarea.append("\n");
+						chatarea.append("\n");
+						chatarea.append("\n");
 					} else if (msg.startsWith("howMany")){
 						return;
 					} else {
 						System.out.println("채팅 스레드에서 보낸 메세지 : " + msg);
 						System.out.println(socket.get(chatRoomNum).getPort() + " : 연결된 포트 넘버");
 						chatarea.append("\n" + msg);
-						repaint();
 					}
 					repaint();
 				}
@@ -396,30 +395,33 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 		new Kakao2();
 	}
 	
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton selectedButton = (JButton)e.getSource();
 		if(selectedButton == makeRoom) {
+			// 방 만들기 액션
 			serverName[count] = JOptionPane.showInputDialog("방 만들기 ");
 			if(serverName[count].length() > 5) {
 				System.out.println("방 제목은 5글자 이하로만 작성가능합니다");
 				JOptionPane.showMessageDialog(null,"방 제목은 5글자까지 작성가능합니다","경고",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			if(serverName[count] != null) {
+			else if(serverName[count] != null) {
 				creatServer(serverName[count]);
 			}
 		}
 		if(selectedButton == delete) {
 			deleteServer();
 		}
+		// 뒤로 가기 액션 
 		if(selectedButton == back) {
 			imoticon = false;
 			imgNum.clear();
 			image.clear();
 			sendMsg.println("quit:"+ socket.get(chatRoomNum).getPort() + ":" + name + " 님이 나가셨습니다.");
 			waitRoom();
-			chatarea.setText("");
+			chatarea.setText(null);
 			try {
 				socket.get(chatRoomNum).close();
 				socket.remove(chatRoomNum);
@@ -436,17 +438,36 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 			remove(sendImg);
 			repaint();
 		}
+		// 이모티콘 보내기
 		if(selectedButton == img1) {
 			sendMsg.println(socket.get(chatRoomNum).getPort()+":"+name+":"+" ");
 			sendMsg.println("img:"+socket.get(chatRoomNum).getPort()+":"+"images/img1.gif");
+			remove(img1);
+			remove(img2);
+			remove(img3);
+			remove(closeImg);
+			add(sendImg,0);
+			repaint();
 		}
 		if(selectedButton == img2) {
 			sendMsg.println(socket.get(chatRoomNum).getPort()+":"+name+":"+" ");
 			sendMsg.println("img:"+socket.get(chatRoomNum).getPort()+":"+"images/img2.gif");
+			remove(img1);
+			remove(img2);
+			remove(img3);
+			remove(closeImg);
+			add(sendImg,0);
+			repaint();
 		}
 		if(selectedButton == img3) {
 			sendMsg.println(socket.get(chatRoomNum).getPort()+":"+name+":"+" ");
 			sendMsg.println("img:"+socket.get(chatRoomNum).getPort()+":"+"images/img3.gif");
+			remove(img1);
+			remove(img2);
+			remove(img3);
+			remove(closeImg);
+			add(sendImg,0);
+			repaint();
 		}
 		if(selectedButton == closeImg) {
 			remove(img1);
@@ -485,7 +506,7 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 			chatRoomNum = 0;
 			System.out.println(chatRoomNum + "번방 입장");
 			try {
-				socket.add(chatRoomNum,new Socket("localhost", portNum.get(0)));
+				socket.add(chatRoomNum,new Socket("localhost", portNum.get(chatRoomNum)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
 				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");
@@ -499,7 +520,7 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 			chatRoomNum = 1;
 			System.out.println(chatRoomNum + "번방 입장");
 			try {
-				socket.add(chatRoomNum,new Socket("localhost", portNum.get(1)));
+				socket.add(chatRoomNum,new Socket("localhost", portNum.get(chatRoomNum)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
 				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");
@@ -513,7 +534,7 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 			chatRoomNum = 2;
 			System.out.println(chatRoomNum + "번방 입장");
 			try {
-				socket.add(chatRoomNum,new Socket("localhost", portNum.get(2)));
+				socket.add(chatRoomNum,new Socket("localhost", portNum.get(chatRoomNum)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
 				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");
@@ -527,7 +548,7 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 			chatRoomNum = 3;
 			System.out.println(chatRoomNum + "번방 입장");
 			try {
-				socket.add(chatRoomNum,new Socket("localhost", portNum.get(3)));
+				socket.add(chatRoomNum,new Socket("localhost", portNum.get(chatRoomNum)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
 				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");
@@ -541,7 +562,7 @@ public class Kakao2 extends JFrame implements ActionListener,ListSelectionListen
 			chatRoomNum = 4;
 			System.out.println(chatRoomNum + "번방 입장");
 			try {
-				socket.add(chatRoomNum,new Socket("localhost", portNum.get(4)));
+				socket.add(chatRoomNum,new Socket("localhost", portNum.get(chatRoomNum)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
 				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");
