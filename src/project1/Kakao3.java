@@ -38,7 +38,7 @@ import javax.swing.event.ListSelectionListener;
 import lombok.Data;
 
 @Data
-public class Kakao extends JFrame implements ActionListener,ListSelectionListener{
+public class Kakao3 extends JFrame implements ActionListener,ListSelectionListener{
 
 	private Vector<Socket>serviceSocket;
 	private Vector<Socket>socket;
@@ -83,7 +83,7 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 	private BufferedReader broadCast; // 대기실 서버 (WAITROOM) 명령어를 계속 받기위해 만듬
 	private PrintWriter orderMsg; // 마찬가지로 (WAITROOM)에 계속 명령어를 내리기 위해 만듬
 	
-	public Kakao () {
+	public Kakao3 () {
 		initData();
 		initLayoutData();
 		actionListener();
@@ -94,7 +94,7 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 			for(int i = 0; i < socket.capacity(); i++) {
 				socket.add(i,null); // 빈 소켓 찾기 위해서 처음에 백터 공간을 전부 null로 만들어줌
 			}
-			serviceSocket.add(WAITROOM,new Socket("192.168.0.48",5000));
+			serviceSocket.add(WAITROOM,new Socket("localhost",5000));
 			System.out.println("서비스 서버 접속 완료");
 			
 			broadCast = new BufferedReader(new InputStreamReader(serviceSocket.get(WAITROOM).getInputStream()));
@@ -105,6 +105,7 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 				try {
 					String serverMsg;
 					while( (serverMsg = broadCast.readLine()) != null) {
+						System.out.println("서버에서 보냄 : " + serverMsg);
 						if(serverMsg.startsWith("createroom")) {
 							String roomName[] = serverMsg.split(":");
 							model.addElement(roomName[1] + " 방 " + "     인원수 : " + 0 + "  / " + 30);
@@ -391,7 +392,7 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 	
 	
 	public static void main(String[] args) {
-		new Kakao();
+		new Kakao3();
 	}
 	
 	
@@ -505,7 +506,7 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 			chatRoomNum = 0;
 			System.out.println(chatRoomNum + "번방 입장");
 			try {
-				socket.add(chatRoomNum,new Socket("192.168.0.48", portNum.get(chatRoomNum)));
+				socket.add(chatRoomNum,new Socket("localhost", portNum.get(chatRoomNum)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
 				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");
@@ -519,7 +520,7 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 			chatRoomNum = 1;
 			System.out.println(chatRoomNum + "번방 입장");
 			try {
-				socket.add(chatRoomNum,new Socket("192.168.0.48", portNum.get(chatRoomNum)));
+				socket.add(chatRoomNum,new Socket("localhost", portNum.get(chatRoomNum)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
 				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");
@@ -533,7 +534,7 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 			chatRoomNum = 2;
 			System.out.println(chatRoomNum + "번방 입장");
 			try {
-				socket.add(chatRoomNum,new Socket("192.168.0.48", portNum.get(chatRoomNum)));
+				socket.add(chatRoomNum,new Socket("localhost", portNum.get(chatRoomNum)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
 				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");
@@ -547,7 +548,7 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 			chatRoomNum = 3;
 			System.out.println(chatRoomNum + "번방 입장");
 			try {
-				socket.add(chatRoomNum,new Socket("192.168.0.48", portNum.get(chatRoomNum)));
+				socket.add(chatRoomNum,new Socket("localhost", portNum.get(chatRoomNum)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
 				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");
@@ -561,7 +562,7 @@ public class Kakao extends JFrame implements ActionListener,ListSelectionListene
 			chatRoomNum = 4;
 			System.out.println(chatRoomNum + "번방 입장");
 			try {
-				socket.add(chatRoomNum,new Socket("192.168.0.48", portNum.get(chatRoomNum)));
+				socket.add(chatRoomNum,new Socket("localhost", portNum.get(chatRoomNum)));
 				readMsg = new BufferedReader(new InputStreamReader(socket.get(chatRoomNum).getInputStream()));
 				sendMsg = new PrintWriter(socket.get(chatRoomNum).getOutputStream(), true);
 				sendMsg.println("enter" + ":" + socket.get(chatRoomNum).getPort() +":"+ name + " 님이 입장하셨습니다.");

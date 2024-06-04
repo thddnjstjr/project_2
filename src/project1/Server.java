@@ -21,6 +21,7 @@ public class Server implements Runnable{
 	private static ArrayList<String>userId;
 	private static ArrayList<String>createUser;
 	private static ArrayList<Integer>serialId;
+	private static ArrayList<Integer>portNumList;
 	private static Kakao kakao;
 	private static PrintWriter writer;
 	private static BufferedReader client;
@@ -40,6 +41,7 @@ public class Server implements Runnable{
 		userId = new ArrayList<>(30);
 		chatSocket = new Vector<>(100);
 		serialId = new ArrayList<>(100);
+		portNumList = new ArrayList<>(100);
 		
 		try (ServerSocket serverSocket = new ServerSocket(5000)){
 			System.out.println("서비스 서버 가동 완료");
@@ -59,7 +61,6 @@ public class Server implements Runnable{
 	public Server(int port,String servername) {
 		this.serverName = servername;
 		this.port = port;
-		port++;
 	}
 	
 	@Override
@@ -67,7 +68,7 @@ public class Server implements Runnable{
 		System.out.println(serverName + "서버 작동");
 		System.out.println(port + " : 서버 포트번호");
 		try (ServerSocket serversocket = new ServerSocket(port)){
-			
+			port++;
 				while(true) {
 					try {
 						// 채팅 서버 접속
@@ -196,6 +197,7 @@ public class Server implements Runnable{
 				String orderMsg;
 				for(int i = 0; i < roomName.size(); i++) { // 처음 들어온 사용자에게 있는 방 리스트를 전송
 					service.println("createroom:" + roomName.get(i));
+					service.println("portNum:" + portNumList.get(i));
 					System.out.println(roomName.get(i));
 				}
 				// 클라이언트에게서 명령이 올때까지 대기
@@ -203,11 +205,11 @@ public class Server implements Runnable{
 					System.out.println(orderMsg + "확인");
 					if(orderMsg.startsWith("createroom")) { // 방 생성 하라는 명령어
 						String[] serverName = orderMsg.split(":");
-						new Thread(new Server(port, serverName[1])).start(); // 서버 생성
 						broadCast(serverName[1],port); // 대기실 서버 사용자들에게 해당 이름의 방을 만들라고 명령 , 포트 주소도 보냄
+						portNumList.add(port);
+						new Thread(new Server(port, serverName[1])).start(); // 서버 생성
 						roomName.add(serverName[1]); // 서버에 방 정보 저장
 						createUser.add(serverName[2]); // 만든유저 정보 저장
-						port++; // 새 서버 생성을 위해 포트번호 변경
 					}
 					if(orderMsg.startsWith("userName")) { // 유저 정보를 받아오는 명령어
 						String[] userName = orderMsg.split(":");
